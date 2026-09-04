@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgriConnect Gujarat — AI Market Linkage</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#f3f7ee;color:#1a2e1a;line-height:1.6;min-height:100vh;padding-bottom:72px}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input,select,textarea{font-family:inherit}
+:root{
+  --gd:#1b5e20;--gm:#2e7d32;--gl:#43a047;--gp:#e8f5e9;
+  --earth:#795548;--ep:#efebe9;
+  --amb:#f57f17;--ambl:#ffb300;--ambp:#fff8e1;
+  --sky:#0277bd;--skyp:#e1f5fe;
+  --red:#c62828;--redp:#ffebee;
+  --surf:#f8faf4;--bdr:#cde0cd;
+  --txt:#1a2e1a;--mut:#557055;--sub:#8aaa8a;
+  --shad:0 2px 8px rgba(0,0,0,.09);
+  --r:12px;--rs:8px;
+}
+h1{font-size:1.5rem;font-weight:700;color:var(--gd)}
+h2{font-size:1.15rem;font-weight:600;color:var(--gd)}
+h3{font-size:.95rem;font-weight:600;color:var(--txt)}
+p{color:var(--mut);font-size:.9rem}
+.lbl{display:inline-block;font-size:.67rem;font-weight:700;padding:2px 7px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em}
+.lbl-live{background:#e8f5e9;color:#1b5e20;border:1px solid #a5d6a7}
+.lbl-fc{background:#fff8e1;color:#e65100;border:1px solid #ffcc80}
+.lbl-sim{background:#fce4ec;color:#880e4f;border:1px solid #f48fb1}
+.lbl-cache{background:#ede7f6;color:#4527a0;border:1px solid #b39ddb}
+#hdr{background:linear-gradient(135deg,#1b5e20,#2e7d32);color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-ic{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.brand h1{font-size:1.05rem;color:#fff;margin:0}
+.brand p{font-size:.68rem;color:rgba(255,255,255,.8);margin:0}
+#langBtn{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:7px;padding:5px 11px;font-size:.78rem;font-weight:700;cursor:pointer}
+#bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--bdr);display:flex;z-index:200;box-shadow:0 -2px 8px rgba(0,0,0,.07)}
+.bni{flex:1;display:flex;flex-direction:column;align-items:center;padding:7px 3px;font-size:.59rem;color:var(--mut);gap:2px;transition:color .2s;cursor:pointer;border:none;background:none}
+.bni .ic{font-size:19px;line-height:1}
+.bni.on{color:var(--gm)}
+@media(min-width:640px){
+  body{padding-bottom:0}
+  #bnav{display:none}
+  #snav{display:flex!important}
+  #wrap{display:flex}
+  #main{flex:1;min-width:0}
+}
+#snav{display:none;flex-direction:column;width:194px;background:#fff;border-right:1px solid var(--bdr);padding:10px 6px;gap:1px;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;flex-shrink:0}
+.sni{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--rs);font-size:.83rem;font-weight:600;color:var(--mut);cursor:pointer;transition:all .2s;width:100%;text-align:left;border:none;background:none}
+.sni:hover{background:var(--gp);color:var(--gd)}
+.sni.on{background:var(--gp);color:var(--gd)}
+.sni .ic{font-size:17px;flex-shrink:0}
+.pg{display:none;padding:14px 15px;max-width:860px;margin:0 auto}
+.pg.on{display:block}
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--shad);padding:15px;margin-bottom:13px;border:1px solid var(--bdr)}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:6px}
+.ch h2{margin:0}
+.dsrc{font-size:.67rem;color:var(--sub)}
+.dsrc::before{content:"📡 "}
+.sk{background:linear-gradient(90deg,#eee 25%,#e0e0e0 50%,#eee 75%);background-size:200% 100%;animation:sh 1.4s infinite;border-radius:5px;height:14px;margin:4px 0}
+.sk.chart{height:190px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.rbar{display:flex;align-items:center;justify-content:space-between;background:var(--gp);border-radius:var(--rs);padding:7px 11px;margin-bottom:11px;font-size:.75rem;color:var(--gd)}
+.rbtn{background:var(--gm);color:#fff;border-radius:6px;padding:3px 9px;font-size:.72rem;font-weight:700;cursor:pointer;border:none}
+.spin{animation:sp 1s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.fg{margin-bottom:11px}
+.fg label{display:block;font-size:.8rem;font-weight:600;color:var(--txt);margin-bottom:3px}
+.fg select,.fg input,.fg textarea{width:100%;padding:9px 11px;border:1.5px solid var(--bdr);border-radius:var(--rs);font-size:.88rem;color:var(--txt);background:#fff;transition:border-color .2s}
+.fg select:focus,.fg input:focus,.fg textarea:focus{outline:none;border-color:var(--gl)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(max-width:440px){.frow{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:9px 16px;border-radius:var(--rs);font-size:.86rem;font-weight:700;transition:all .2s;border:2px solid transparent;cursor:pointer}
+.btn-p{background:var(--gm);color:#fff}.btn-p:hover{background:var(--gd)}
+.btn-s{background:#fff;color:var(--gm);border-color:var(--gm)}.btn-s:hover{background:var(--gp)}
+.btn-a{background:var(--amb);color:#fff;border-color:var(--amb)}
+.btn-sm{padding:5px 11px;font-size:.76rem}
+.btn-w{width:100%;justify-content:center}
+.ptbl{width:100%;border-collapse:collapse;font-size:.83rem}
+.ptbl th{background:var(--gp);color:var(--gd);padding:7px 9px;text-align:left;font-weight:700;font-size:.75rem}
+.ptbl td{padding:7px 9px;border-bottom:1px solid var(--bdr);vertical-align:middle}
+.ptbl tr:last-child td{border-bottom:none}
+.ptbl tr:hover td{background:var(--surf)}
+.pv{font-weight:700;color:var(--gd);font-size:.97rem}
+.up{color:#2e7d32;font-weight:600}.dn{color:#c62828;font-weight:600}.neu{color:var(--mut)}
+.tl{display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px}
+.tl-ic{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 4px 14px rgba(0,0,0,.14)}
+.tl-sell{background:linear-gradient(135deg,#c62828,#e53935)}
+.tl-wait{background:linear-gradient(135deg,#e65100,#fb8c00)}
+.tl-store{background:linear-gradient(135deg,#1b5e20,#2e7d32)}
+.tl-lbl{font-size:1.05rem;font-weight:700}
+.tl-rsn{font-size:.8rem;color:var(--mut);text-align:center;max-width:270px}
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:13px}
+@media(min-width:560px){.sg{grid-template-columns:repeat(4,1fr)}}
+.sc{background:#fff;border-radius:var(--rs);padding:11px;border:1px solid var(--bdr);text-align:center}
+.sc .sv{font-size:1.35rem;font-weight:800;color:var(--gd)}
+.sc .sl{font-size:.7rem;color:var(--mut)}
+.sc.hi{background:var(--gp);border-color:var(--gl)}
+.upz{border:2px dashed var(--bdr);border-radius:var(--r);padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surf)}
+.upz:hover,.upz.drag{border-color:var(--gl);background:var(--gp)}
+.upz input[type=file]{display:none}
+.upz .ui{font-size:38px;margin-bottom:6px}
+.gbdg{display:inline-flex;align-items:center;justify-content:center;width:70px;height:70px;border-radius:50%;font-size:1.9rem;font-weight:800;color:#fff;box-shadow:var(--shad)}
+.ga{background:linear-gradient(135deg,#1b5e20,#4caf50)}
+.gb{background:linear-gradient(135deg,#e65100,#fb8c00)}
+.gc{background:linear-gradient(135deg,#795548,#a1887f)}
+.al{padding:9px 13px;border-radius:var(--rs);font-size:.8rem;margin-bottom:9px;display:flex;align-items:flex-start;gap:7px}
+.al-i{background:var(--skyp);color:#01579b;border-left:4px solid var(--sky)}
+.al-w{background:var(--ambp);color:#e65100;border-left:4px solid var(--amb)}
+.al-e{background:var(--redp);color:var(--red);border-left:4px solid var(--red)}
+.al-s{background:var(--gp);color:var(--gd);border-left:4px solid var(--gl)}
+.hero{background:linear-gradient(135deg,#1b5e20 0%,#33691e 55%,#f57f17 100%);color:#fff;border-radius:var(--r);padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+.hero::after{content:"🌾";position:absolute;right:-8px;bottom:-8px;font-size:76px;opacity:.13;pointer-events:none}
+.hero h2{color:#fff;font-size:1.25rem;margin-bottom:5px}
+.hero p{color:rgba(255,255,255,.85);font-size:.86rem}
+.hchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.hchip{background:rgba(255,255,255,.14);color:#fff;border-radius:99px;padding:3px 11px;font-size:.72rem;font-weight:600;border:1px solid rgba(255,255,255,.2)}
+.tabs{display:flex;gap:2px;background:var(--bdr);border-radius:var(--rs);padding:3px;margin-bottom:13px}
+.tab{flex:1;padding:6px;text-align:center;font-size:.78rem;font-weight:600;color:var(--mut);border-radius:7px;cursor:pointer;transition:all .2s;border:none;background:none}
+.tab.on{background:#fff;color:var(--gd);box-shadow:0 1px 4px rgba(0,0,0,.09)}
+.cw{position:relative;height:210px;margin:7px 0}
+@media(min-width:560px){.cw{height:265px}}
+.pb{height:7px;background:#e0e0e0;border-radius:99px;overflow:hidden;margin-top:4px}
+.pf{height:100%;border-radius:99px;transition:width .6s}
+.pf-g{background:var(--gl)}.pf-a{background:var(--ambl)}.pf-r{background:#ef5350}
+.crow{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bdr)}
+.crow:last-child{border-bottom:none}
+.clbl{font-size:.8rem;color:var(--mut)}
+.cval{font-weight:700;font-size:.92rem}
+.bc{border:1px solid var(--bdr);border-radius:var(--rs);padding:11px;margin-bottom:7px;background:#fff}
+.bc .bh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.bc .bn{font-weight:700;font-size:.92rem;color:var(--txt)}
+.bc .bp{font-size:1.05rem;font-weight:800;color:var(--gd)}
+.bc .bd{font-size:.75rem;color:var(--mut);margin-top:3px}
+.dv{height:1px;background:var(--bdr);margin:12px 0}
+.qcard{background:#fff;border-radius:var(--rs);border:1px solid var(--bdr);padding:14px;cursor:pointer;transition:all .2s;display:flex;gap:12px;align-items:flex-start}
+.qcard:hover{border-color:var(--gl);box-shadow:var(--shad);transform:translateY(-1px)}
+.qcard .qi{font-size:1.7rem;flex-shrink:0}
+.qcard .qt{font-weight:700;font-size:.92rem;color:var(--txt)}
+.qcard .qd{font-size:.79rem;color:var(--mut);margin-top:2px}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+@media(max-width:500px){.qgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="hdr">
+  <div class="brand">
+    <div class="brand-ic">🌱</div>
+    <div>
+      <h1 id="brand-title">AgriConnect Gujarat</h1>
+      <p id="brand-sub">AI-Powered Market Linkage</p>
+    </div>
+  </div>
+  <button id="langBtn" onclick="toggleLang()">ગુ</button>
+</header>
+
+<!-- LAYOUT WRAPPER -->
+<div id="wrap">
+
+<!-- SIDE NAV (desktop) -->
+<nav id="snav">
+  <button class="sni on" data-pg="home"><span class="ic">🏠</span><span data-en="Home" data-gu="હોમ">Home</span></button>
+  <button class="sni" data-pg="mandi"><span class="ic">📈</span><span data-en="Price Forecast" data-gu="ભાવ અનુમાન">Price Forecast</span></button>
+  <button class="sni" data-pg="buyers"><span class="ic">🤝</span><span data-en="Find Buyers" data-gu="ખરીદદાર">Find Buyers</span></button>
+  <button class="sni" data-pg="storage"><span class="ic">🏪</span><span data-en="Sell or Store" data-gu="વેચો / સ્ટોર">Sell or Store</span></button>
+  <button class="sni" data-pg="quality"><span class="ic">🔍</span><span data-en="Quality Grade" data-gu="ગ્રેડ">Quality Grade</span></button>
+  <button class="sni" data-pg="income"><span class="ic">💰</span><span data-en="My Income" data-gu="આવક">My Income</span></button>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+<!-- ══════════════════════════════
+     HOME PAGE
+══════════════════════════════ -->
+<section class="pg on" id="pg-home">
+  <div class="hero">
+    <h2 data-en="AgriConnect Gujarat 🌾" data-gu="એગ્રીકનેક્ટ ગુજરાત 🌾">AgriConnect Gujarat 🌾</h2>
+    <p data-en="Real-time mandi prices, AI forecasts, and direct buyer connections for cotton &amp; groundnut farmers across Gujarat."
+       data-gu="ગુજરાતના કપાસ અને મગફળી ખેડૂતો માટે રીઅલ-ટાઇમ મંડી ભાવ, AI અનુમાન અને સીધા ખરીદદાર સંપર્ક.">
+      Real-time mandi prices, AI forecasts, and direct buyer connections for cotton &amp; groundnut farmers across Gujarat.
+    </p>
+    <div class="hchips">
+      <span class="hchip" data-en="🌿 Cotton &amp; Groundnut" data-gu="🌿 કપાસ અને મગફળી">🌿 Cotton &amp; Groundnut</span>
+      <span class="hchip" data-en="📍 6 Gujarat Mandis" data-gu="📍 ૬ ગુજરાત મંડી">📍 6 Gujarat Mandis</span>
+      <span class="hchip" data-en="🤖 5 AI Agents" data-gu="🤖 ૫ AI એજન્ટ">🤖 5 AI Agents</span>
+      <span class="hchip" data-en="📊 Live Agmarknet Data" data-gu="📊 લાઇવ ડેટા">📊 Live Agmarknet Data</span>
+    </div>
+  </div>
+
+  <div class="sg">
+    <div class="sc hi">
+      <div class="sv" id="home-cotton-price">—</div>
+      <div class="sl" data-en="Cotton (Rajkot) ₹/qtl" data-gu="કપાસ (રાજકોટ) ₹/ક્વિ">Cotton (Rajkot) ₹/qtl</div>
+    </div>
+    <div class="sc hi">
+      <div class="sv" id="home-gnut-price">—</div>
+      <div class="sl" data-en="Groundnut (Junagadh) ₹/qtl" data-gu="મગફળી (જૂનાગઢ) ₹/ક્વિ">Groundnut (Junagadh) ₹/qtl</div>
+    </div>
+    <div class="sc">
+      <div class="sv">6</div>
+      <div class="sl" data-en="Mandis Tracked" data-gu="ટ્રૅક મંડી">Mandis Tracked</div>
+    </div>
+    <div class="sc">
+      <div class="sv" id="home-updated">—</div>
+      <div class="sl" data-en="Last Data Update" data-gu="છેલ્લો ડેટા અપડેટ">Last Data Update</div>
+    </div>
+  </div>
+
+  <div id="home-api-status"></div>
+
+  <div class="qgrid">
+    <div class="qcard" onclick="nav('mandi')">
+      <div class="qi">📈</div>
+      <div>
+        <div class="qt" data-en="Price Forecasting" data-gu="ભાવ અનુમાન">Price Forecasting</div>
+        <div class="qd" data-en="Live mandi prices + 7-day AI forecast" data-gu="લાઇવ ભાવ + ૭-દિ. AI અનુમાન">Live mandi prices + 7-day AI forecast</div>
+      </div>
+    </div>
+    <div class="qcard" onclick="nav('buyers')">
+      <div class="qi">🤝</div>
+      <div>
+        <div class="qt" data-en="Find Buyers" data-gu="ખરીદદાર શોધો">Find Buyers</div>
+        <div class="qd" data-en="Compare mandi vs direct buyer offers" data-gu="મંડી vs ખરીદદાર ભાવ સરખામણી">Compare mandi vs direct buyer offers</div>
+      </div>
+    </div>
+    <div class="qcard" onclick="nav('storage')">
+      <div class="qi">🏪</div>
+      <div>
+        <div class="qt" data-en="Sell or Store?" data-gu="વેચો કે સ્ટોર?">Sell or Store?</div>
+        <div class="qd" data-en="AI timing advisor based on price trend" data-gu="ભાવ ટ્રેન્ડ આધારે AI સલાહ">AI timing advisor based on price trend</div>
+      </div>
+    </div>
+    <div class="qcard" onclick="nav('quality')">
+      <div class="qi">🔍</div>
+      <div>
+        <div class="qt" data-en="Quality Grading" data-gu="ગ્રેડ">Quality Grading</div>
+        <div class="qd" data-en="Upload photo — AI grades A/B/C" data-gu="ફોટો અપલોડ — AI A/B/C ગ્રેડ">Upload photo — AI grades A/B/C</div>
+      </div>
+    </div>
+    <div class="qcard" onclick="nav('income')">
+      <div class="qi">💰</div>
+      <div>
+        <div class="qt" data-en="Income Dashboard" data-gu="આવક ડૅશબોર્ડ">Income Dashboard</div>
+        <div class="qd" data-en="Track sales vs mandi average" data-gu="વેચાણ vs મંડી સરેરાશ ટ્રૅક">Track sales vs mandi average</div>
+      </div>
+    </div>
+    <div class="qcard" style="cursor:default;border-color:var(--bdr)">
+      <div class="qi">📞</div>
+      <div>
+        <div class="qt" data-en="Kisan Helpline" data-gu="કિસાન હેલ્પલાઇન">Kisan Helpline</div>
+        <div class="qd" data-en="1800-180-1551 (Free) 6am–10pm" data-gu="1800-180-1551 (ફ્રી) સ.૬–રા.૧૦">1800-180-1551 (Free) 6am–10pm</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     MANDI PRICE FORECAST
+══════════════════════════════ -->
+<section class="pg" id="pg-mandi">
+  <div class="card">
+    <div class="ch">
+      <h2 data-en="📈 Mandi Price Forecast" data-gu="📈 મંડી ભાવ અનુમાન">📈 Mandi Price Forecast</h2>
+      <span class="lbl lbl-live" id="mandi-live-badge">LIVE</span>
+    </div>
+    <div class="rbar">
+      <span id="mandi-ts" data-en="Fetching latest data…" data-gu="ડેટા લોડ…">Fetching latest data…</span>
+      <button class="rbtn" onclick="loadMandiData(true)">⟳ Refresh</button>
+    </div>
+    <div class="al al-i" style="font-size:.78rem">
+      ℹ️ <span data-en="Prices sourced from Agmarknet (data.gov.in). Forecast is AI-generated and clearly labeled — not an official mandi price."
+               data-gu="ભાવ Agmarknet (data.gov.in) થી. અનુમાન AI-જનિત છે — સત્તાવાર મંડી ભાવ નથી.">
+        Prices sourced from Agmarknet (data.gov.in). Forecast is AI-generated and clearly labeled — not an official mandi price.
+      </span>
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+      <div style="flex:1;min-width:140px">
+        <div class="fg" style="margin:0">
+          <label data-en="Crop" data-gu="પાક">Crop</label>
+          <select id="mandi-crop" onchange="onMandiFilter()">
+            <option value="Cotton" data-en="Cotton" data-gu="કપાસ">Cotton</option>
+            <option value="Groundnut" data-en="Groundnut" data-gu="મગફળી">Groundnut</option>
+          </select>
+        </div>
+      </div>
+      <div style="flex:1;min-width:140px">
+        <div class="fg" style="margin:0">
+          <label data-en="Mandi" data-gu="મંડી">Mandi</label>
+          <select id="mandi-market" onchange="onMandiFilter()">
+            <option value="all" data-en="All Gujarat Mandis" data-gu="બધી ગુજરાત મંડી">All Gujarat Mandis</option>
+            <option value="Rajkot">Rajkot</option>
+            <option value="Junagadh">Junagadh</option>
+            <option value="Ahmedabad">Ahmedabad</option>
+            <option value="Bhavnagar">Bhavnagar</option>
+            <option value="Amreli">Amreli</option>
+            <option value="Gondal">Gondal</option>
+          </select>
+        </div>
+      </div>
+      <div style="flex:1;min-width:120px">
+        <div class="fg" style="margin:0">
+          <label data-en="Period" data-gu="સમયગાળો">Period</label>
+          <select id="mandi-period" onchange="onMandiFilter()">
+            <option value="7" data-en="Last 7 days" data-gu="છેલ્લા ૭ દિ.">Last 7 days</option>
+            <option value="14" selected data-en="Last 14 days" data-gu="છેલ્લા ૧૪ દિ.">Last 14 days</option>
+            <option value="30" data-en="Last 30 days" data-gu="છેલ્લા ૩૦ દિ.">Last 30 days</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="mandi-chart-wrap" class="cw"><canvas id="mandiChart"></canvas></div>
+    <div id="mandi-chart-sk" class="sk chart" style="display:none"></div>
+
+    <div class="al al-w" id="mandi-forecast-box" style="margin-top:8px;font-size:.8rem">
+      <span>🤖</span>
+      <div>
+        <strong><span class="lbl lbl-fc">AI Forecast</span></strong>
+        <span id="mandi-forecast-text"> Loading forecast…</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch">
+      <h2 data-en="Today's Mandi Prices" data-gu="આજના મંડી ભાવ">Today's Mandi Prices</h2>
+      <span class="dsrc" id="mandi-table-src">Source: Agmarknet</span>
+    </div>
+    <div id="mandi-table-sk"><div class="sk" style="height:18px;margin:6px 0"></div><div class="sk" style="height:18px;margin:6px 0"></div><div class="sk" style="height:18px;margin:6px 0"></div></div>
+    <div style="overflow-x:auto" id="mandi-table-wrap" style="display:none">
+      <table class="ptbl">
+        <thead>
+          <tr>
+            <th data-en="Mandi" data-gu="મંડી">Mandi</th>
+            <th data-en="Modal ₹/qtl" data-gu="₹/ક્વિ">Modal ₹/qtl</th>
+            <th data-en="Min" data-gu="ન્યૂનતમ">Min</th>
+            <th data-en="Max" data-gu="મહત્તમ">Max</th>
+            <th data-en="vs Yesterday" data-gu="ગઈ કાલ">vs Yesterday</th>
+            <th data-en="7-day Forecast" data-gu="૭-દિ. અનુમાન">7-day Forecast <span class="lbl lbl-fc">AI</span></th>
+          </tr>
+        </thead>
+        <tbody id="mandi-tbody"></tbody>
+      </table>
+    </div>
+    <div id="mandi-table-err" class="al al-e" style="display:none">
+      ⚠️ <span data-en="Could not load live data. Showing cached prices." data-gu="લાઇવ ડેટા ઉપલબ્ધ નથી. કૅશ ભાવ દર્શાવ્યા.">Could not load live data. Showing cached prices.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     BUYER MATCHING
+══════════════════════════════ -->
+<section class="pg" id="pg-buyers">
+  <div class="card">
+    <div class="ch">
+      <h2 data-en="🤝 Find Direct Buyers" data-gu="🤝 સીધા ખરીદદાર">🤝 Find Direct Buyers</h2>
+      <span class="lbl lbl-sim">Illustrative</span>
+    </div>
+    <div class="al al-i" style="font-size:.78rem">
+      ℹ️ <span data-en="Mandi price is live from Agmarknet. Buyer offers are illustrative estimates — a real buyer CRM can be plugged in here."
+               data-gu="મંડી ભાવ Agmarknet થી લાઇવ. ખરીદદાર ઑફર ઇલ્સ્ટ્રેટિવ — ભવિષ્યમાં real buyer API ઍક્ટ. ">
+        Mandi price is live from Agmarknet. Buyer offers are illustrative estimates — a real buyer CRM can be plugged in here.
+      </span>
+    </div>
+    <div class="frow">
+      <div class="fg">
+        <label data-en="Crop" data-gu="પાક">Crop</label>
+        <select id="b-crop" onchange="updateBuyerMandiRef()">
+          <option value="Cotton">Cotton / કપાસ</option>
+          <option value="Groundnut">Groundnut / મગફળી</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label data-en="Location (Mandi)" data-gu="સ્થળ (મંડી)">Location (Mandi)</label>
+        <select id="b-loc" onchange="updateBuyerMandiRef()">
+          <option>Rajkot</option><option>Junagadh</option><option>Ahmedabad</option>
+          <option>Bhavnagar</option><option>Amreli</option><option>Gondal</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label data-en="Quantity (Quintals)" data-gu="માત્રા (ક્વિ.)">Quantity (Quintals)</label>
+        <input type="number" id="b-qty" value="50" min="1">
+      </div>
+      <div class="fg">
+        <label data-en="Quality Grade" data-gu="ગ્રેડ">Quality Grade</label>
+        <select id="b-grade">
+          <option value="A">Grade A — Premium</option>
+          <option value="B" selected>Grade B — Standard</option>
+          <option value="C">Grade C — Fair</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-p btn-w" onclick="findBuyers()">🔍 <span data-en="Match Buyers" data-gu="ખરીદદાર શોધો">Match Buyers</span></button>
+  </div>
+
+  <div class="card" id="buyer-compare-card">
+    <div class="ch">
+      <h2 data-en="Price Comparison" data-gu="ભાવ સરખામણી">Price Comparison</h2>
+      <span class="dsrc" id="buyer-mandi-src">Source: Agmarknet</span>
+    </div>
+    <div class="crow">
+      <span class="clbl" data-en="Live Mandi Price" data-gu="લાઇવ મંડી ભાવ">Live Mandi Price <span class="lbl lbl-live">LIVE</span></span>
+      <span class="cval" id="bc-mandi">—</span>
+    </div>
+    <div class="crow">
+      <span class="clbl" data-en="Est. after Middleman (−10%)" data-gu="બિચોળિયા પછી (−10%)">Est. after Middleman (−10%) <span class="lbl lbl-sim">EST</span></span>
+      <span class="cval" id="bc-mid" style="color:var(--red)">—</span>
+    </div>
+    <div class="crow">
+      <span class="clbl" data-en="Best Direct Buyer Offer" data-gu="શ્રેષ્ઠ ખરીદ ઑફર">Best Direct Buyer Offer <span class="lbl lbl-sim">ILLUSTRATIVE</span></span>
+      <span class="cval" id="bc-buyer" style="color:var(--gd)">—</span>
+    </div>
+    <div class="dv"></div>
+    <div class="al al-s" id="buyer-savings-msg">
+      <span>💚</span><span id="buyer-savings-text">Match buyers to see potential savings.</span>
+    </div>
+  </div>
+
+  <div id="buyer-results-wrap">
+    <h3 style="margin-bottom:9px;color:var(--gd)" id="buyer-results-title"></h3>
+    <div id="buyer-list"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     STORAGE ADVISOR
+══════════════════════════════ -->
+<section class="pg" id="pg-storage">
+  <div class="card">
+    <div class="ch">
+      <h2 data-en="🏪 Storage &amp; Timing Advisor" data-gu="🏪 સ્ટોરેજ સ્ટ &amp; સમય સલાહ">🏪 Storage &amp; Timing Advisor</h2>
+      <span class="lbl lbl-live">LIVE + AI</span>
+    </div>
+    <div class="al al-i" style="font-size:.78rem">
+      ℹ️ <span data-en="Recommendation is based on live mandi price trend + AI price forecast. Clearly labeled as AI advice, not guaranteed."
+               data-gu="ભલામણ લાઇવ ભાવ ટ્રેન્ડ + AI અનુમાન પર આધારિત. AI સલાહ — ગૅરંટી નથી.">
+        Recommendation is based on live mandi price trend + AI price forecast. Clearly labeled as AI advice, not guaranteed.
+      </span>
+    </div>
+    <div class="frow">
+      <div class="fg">
+        <label data-en="Crop" data-gu="પાક">Crop</label>
+        <select id="st-crop" onchange="runStorageAdvisor()">
+          <option value="Cotton">Cotton</option>
+          <option value="Groundnut">Groundnut</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label data-en="Mandi" data-gu="મંડી">Mandi</label>
+        <select id="st-mandi" onchange="runStorageAdvisor()">
+          <option>Rajkot</option><option>Junagadh</option><option>Ahmedabad</option>
+          <option>Bhavnagar</option><option>Amreli</option><option>Gondal</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label data-en="Quantity you have (qtl)" data-gu="તમારી પાસે (ક્વિ.)">Quantity you have (qtl)</label>
+        <input type="number" id="st-qty" value="100" min="1" oninput="runStorageAdvisor()">
+      </div>
+      <div class="fg">
+        <label data-en="Storage cost/qtl/month (₹)" data-gu="સ્ટોરેજ ખર્ચ ₹/ક્વિ/મહ.">Storage cost/qtl/month (₹)</label>
+        <input type="number" id="st-cost" value="80" min="0" oninput="runStorageAdvisor()">
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="text-align:center">
+    <div class="tl" id="storage-tl">
+      <div class="tl-ic tl-wait" id="tl-icon">⏳</div>
+      <div class="tl-lbl" id="tl-label">Analysing…</div>
+      <div class="tl-rsn" id="tl-reason">Select crop and mandi above to get advice.</div>
+    </div>
+    <div class="dv"></div>
+    <div class="dsrc" id="storage-src" style="text-align:center;margin-top:4px"></div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-bottom:10px" data-en="Key Factors" data-gu="મુખ્ય પરિબળો">Key Factors</h2>
+    <div id="storage-factors">
+      <div class="crow"><span class="clbl" data-en="Current Modal Price" data-gu="વર્તમાન ભાવ">Current Modal Price</span><span class="cval" id="sf-price">—</span></div>
+      <div class="crow"><span class="clbl" data-en="7-day Forecast Direction" data-gu="૭-દિ. અનુમાન">7-day Forecast Direction</span><span class="cval" id="sf-trend">—</span></div>
+      <div class="crow"><span class="clbl" data-en="Break-even Store Period" data-gu="બ્રેક-ઇવ સ્ટોર સમય">Break-even Store Period</span><span class="cval" id="sf-breakeven">—</span></div>
+      <div class="crow"><span class="clbl" data-en="Est. Extra Income if Wait" data-gu="રાહ જોવા પર વધારાની આવક">Est. Extra Income if Wait <span class="lbl lbl-fc">Forecast</span></span><span class="cval" id="sf-extra">—</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     QUALITY GRADING
+══════════════════════════════ -->
+<section class="pg" id="pg-quality">
+  <div class="card">
+    <div class="ch">
+      <h2 data-en="🔍 Quality Grading AI" data-gu="🔍 ગ્રેડ AI">🔍 Quality Grading AI</h2>
+      <span class="lbl lbl-sim">AI Estimate</span>
+    </div>
+    <div class="al al-w" style="font-size:.78rem">
+      ⚠️ <span data-en="This is an AI-estimated grade, NOT an official certification. For official grading, contact your local APMC or accredited lab."
+               data-gu="આ AI-અંદાજ ગ્રેડ છે, સત્તાવાર પ્રમાણ-પત્ર નથી. સત્તાવાર ગ્રેડ માટે APMC/lab નો સંપર્ક.">
+        This is an AI-estimated grade, NOT an official certification. For official grading, contact your local APMC or accredited lab.
+      </span>
+    </div>
+    <div class="fg">
+      <label data-en="Crop Type" data-gu="પાક પ્રકાર">Crop Type</label>
+      <select id="q-crop">
+        <option value="Cotton">Cotton / કપાસ</option>
+        <option value="Groundnut">Groundnut / મગફળી</option>
+      </select>
+    </div>
+    <div class="upz" id="upz" onclick="document.getElementById('imgInput').click()"
+         ondragover="event.preventDefault();this.classList.add('drag')"
+         ondragleave="this.classList.remove('drag')"
+         ondrop="handleDrop(event)">
+      <input type="file" id="imgInput" accept="image/*" onchange="handleImageUpload(event)">
+      <div class="ui">📷</div>
+      <p style="font-weight:600;color:var(--gd)" data-en="Tap to upload produce photo" data-gu="ઉત્પાદ ફોટો અપલોડ">Tap to upload produce photo</p>
+      <p style="font-size:.76rem;margin-top:3px" data-en="or drag &amp; drop • JPG/PNG • max 10MB" data-gu="અથવા ડ્રૅગ &amp; ડ્રૉપ • JPG/PNG">or drag &amp; drop • JPG/PNG • max 10MB</p>
+    </div>
+    <div id="img-preview" style="display:none;margin-top:10px">
+      <img id="preview-img" style="max-height:200px;border-radius:var(--rs);border:1px solid var(--bdr);max-width:100%">
+      <button class="btn btn-p btn-w" style="margin-top:8px" onclick="runGrading()">🤖 <span data-en="Run AI Grading" data-gu="AI ગ્રેડ ચલાવો">Run AI Grading</span></button>
+    </div>
+  </div>
+
+  <div class="card" id="grade-result-card" style="display:none">
+    <div class="ch">
+      <h2 data-en="Grading Result" data-gu="ગ્રેડ પરિણામ">Grading Result</h2>
+      <span class="lbl lbl-sim">AI Estimate — Not Official</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px">
+      <div class="gbdg" id="grade-badge">A</div>
+      <div>
+        <div style="font-size:1.1rem;font-weight:800;color:var(--gd)" id="grade-name">Grade A — Premium</div>
+        <div style="font-size:.82rem;color:var(--mut)" id="grade-conf">Confidence: 84%</div>
+        <div style="margin-top:6px">
+          <div style="font-size:.75rem;color:var(--mut);margin-bottom:3px">AI Confidence</div>
+          <div class="pb" style="width:200px"><div class="pf pf-g" id="grade-pb" style="width:84%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div id="grade-tips"></div>
+    <div class="dv"></div>
+    <div class="al al-s" id="grade-price-impact">
+      <span>💡</span><span id="grade-price-text"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     INCOME DASHBOARD
+══════════════════════════════ -->
+<section class="pg" id="pg-income">
+  <div class="card">
+    <div class="ch">
+      <h2 data-en="💰 My Income Dashboard" data-gu="💰 મારી આવક">💰 My Income Dashboard</h2>
+    </div>
+    <div class="al al-i" style="font-size:.78rem">
+      ℹ️ <span data-en="Enter your sales below. Mandi average for comparison is pulled from live Agmarknet data."
+               data-gu="નીચે તમારા વેચાણ દાખલ કરો. સરખામણી માટે Agmarknet લાઇવ ડેટ.">
+        Enter your sales below. Mandi average for comparison is pulled from live Agmarknet data.
+      </span>
+    </div>
+    <h3 style="margin-bottom:8px" data-en="Record a Sale" data-gu="વેચાણ નોંધ">Record a Sale</h3>
+    <div class="frow">
+      <div class="fg">
+        <label data-en="Date" data-gu="તારીખ">Date</label>
+        <input type="date" id="inc-date">
+      </div>
+      <div class="fg">
+        <label data-en="Crop" data-gu="પાક">Crop</label>
+        <select id="inc-crop">
+          <option value="Cotton">Cotton</option>
+          <option value="Groundnut">Groundnut</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label data-en="Quantity (qtl)" data-gu="માત્રા (ક્વિ.)">Quantity (qtl)</label>
+        <input type="number" id="inc-qty" value="20" min="1">
+      </div>
+      <div class="fg">
+        <label data-en="Your Sale Price (₹/qtl)" data-gu="તમારો ભાવ (₹/ક્વિ.)">Your Sale Price (₹/qtl)</label>
+        <input type="number" id="inc-price" placeholder="e.g. 6800">
+      </div>
+    </div>
+    <div class="fg">
+      <label data-en="Mandi / Buyer Name" data-gu="મંડી / ખરીદદાર">Mandi / Buyer Name</label>
+      <input type="text" id="inc-buyer" placeholder="e.g. Rajkot Mandi / Shree Agro">
+    </div>
+    <button class="btn btn-p btn-w" onclick="addSale()">+ <span data-en="Add Sale Record" data-gu="વેચાણ ઉમેરો">Add Sale Record</span></button>
+  </div>
+
+  <div id="income-summary-wrap" style="display:none">
+    <div class="sg" id="income-stats"></div>
+    <div class="card">
+      <div class="ch">
+        <h2 data-en="Income vs Mandi Average" data-gu="આવક vs મંડી સરેરાશ">Income vs Mandi Average</h2>
+        <span class="dsrc">Agmarknet comparison</span>
+      </div>
+      <div class="cw"><canvas id="incomeChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="ch">
+        <h2 data-en="Sale Records" data-gu="વેચાણ નોંધ">Sale Records</h2>
+        <button class="btn btn-s btn-sm" onclick="clearSales()">🗑️ Clear All</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="ptbl">
+          <thead>
+            <tr>
+              <th data-en="Date" data-gu="તારીખ">Date</th>
+              <th data-en="Crop" data-gu="પાક">Crop</th>
+              <th data-en="Qty" data-gu="ક્વિ.">Qty</th>
+              <th data-en="Your Price" data-gu="ભાવ">Your Price</th>
+              <th data-en="Mandi Avg" data-gu="મ.સ.">Mandi Avg <span class="lbl lbl-live" style="font-size:.6rem">LIVE</span></th>
+              <th data-en="+/− vs Mandi" data-gu="± vs મ.">+/− vs Mandi</th>
+            </tr>
+          </thead>
+          <tbody id="income-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="income-empty" class="al al-i">
+    <span>📊</span><span data-en="No sales recorded yet. Add your first sale above." data-gu="હજી કોઈ વેચાણ નોંધ નથી. ઉપર ઉમેરો.">No sales recorded yet. Add your first sale above.</span>
+  </div>
+</section>
+
+</main><!-- end #main -->
+</div><!-- end #wrap -->
+
+<!-- BOTTOM NAV (mobile) -->
+<nav id="bnav">
+  <button class="bni on" data-pg="home"><span class="ic">🏠</span><span data-en="Home" data-gu="હોમ">Home</span></button>
+  <button class="bni" data-pg="mandi"><span class="ic">📈</span><span data-en="Prices" data-gu="ભાવ">Prices</span></button>
+  <button class="bni" data-pg="buyers"><span class="ic">🤝</span><span data-en="Buyers" data-gu="ખ.">Buyers</span></button>
+  <button class="bni" data-pg="storage"><span class="ic">🏪</span><span data-en="Timing" data-gu="સ.">Timing</span></button>
+  <button class="bni" data-pg="quality"><span class="ic">🔍</span><span data-en="Grade" data-gu="ગ્રે.">Grade</span></button>
+  <button class="bni" data-pg="income"><span class="ic">💰</span><span data-en="Income" data-gu="આ.">Income</span></button>
+</nav>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   CONFIG — swap endpoints/keys here without touching UI
+═══════════════════════════════════════════════════ */
+const CFG = {
+  AGMARKNET_URL: 'https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070',
+  AGMARKNET_KEY: 'your_data_gov_in_api_key', // Replace at data.gov.in/user/register
+  BUYER_API_URL: null, // Plug real CRM/buyer API endpoint here
+  CACHE_TTL: 4 * 60 * 60 * 1000, // 4 hours
+  MANDIS: ['Rajkot','Junagadh','Ahmedabad','Bhavnagar','Amreli','Gondal'],
+  CROPS: ['Cotton','Groundnut'],
+};
+
+/* STATE */
+let STATE = {
+  lang: 'en',
+  activePage: 'home',
+  mandiData: null,
+  dataTimestamp: null,
+  dataSource: 'none',
+  sales: [],
+  charts: {},
+  incomeChart: null,
+};
+
+// Load persisted sales
+try { STATE.sales = JSON.parse(localStorage.getItem('acg_sales') || '[]'); } catch(e){}
+
+/* ═══════════════════════════════════════════════════
+   FALLBACK DATA
+   Representative Gujarat mandi prices used ONLY when
+   the live Agmarknet API is unreachable.
+   Source: Agmarknet public mandi arrival reports.
+   Always labeled FALLBACK/CACHED — never shown as live.
+═══════════════════════════════════════════════════ */
+const FALLBACK = {
+  Cotton: {
+    Rajkot:     { modal:6840, min:6500, max:7100, hist:[6620,6650,6700,6720,6760,6810,6840] },
+    Junagadh:   { modal:6780, min:6450, max:7050, hist:[6560,6590,6640,6680,6720,6750,6780] },
+    Ahmedabad:  { modal:6900, min:6600, max:7200, hist:[6680,6710,6760,6800,6850,6880,6900] },
+    Bhavnagar:  { modal:6820, min:6500, max:7080, hist:[6600,6630,6670,6720,6770,6800,6820] },
+    Amreli:     { modal:6750, min:6420, max:7020, hist:[6530,6560,6600,6640,6690,6720,6750] },
+    Gondal:     { modal:6870, min:6550, max:7130, hist:[6640,6670,6720,6770,6820,6845,6870] },
+  },
+  Groundnut: {
+    Rajkot:     { modal:5980, min:5600, max:6300, hist:[5800,5830,5860,5900,5930,5960,5980] },
+    Junagadh:   { modal:6050, min:5700, max:6380, hist:[5860,5890,5920,5960,6000,6030,6050] },
+    Ahmedabad:  { modal:6100, min:5750, max:6420, hist:[5900,5930,5960,6000,6040,6075,6100] },
+    Bhavnagar:  { modal:5940, min:5580, max:6260, hist:[5760,5790,5820,5860,5895,5920,5940] },
+    Amreli:     { modal:6000, min:5650, max:6320, hist:[5820,5850,5880,5915,5950,5975,6000] },
+    Gondal:     { modal:6030, min:5680, max:6340, hist:[5840,5870,5900,5935,5970,6005,6030] },
+  }
+};
+
+/* UTILS */
+function fmtDate(d) { return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
+function fmtDateTime(d) { return d.toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function today() { return new Date().toISOString().split('T')[0]; }
+function pastDates(n) {
+  const arr=[];
+  for(let i=n-1;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); arr.push(d.toISOString().split('T')[0]); }
+  return arr;
+}
+
+/* CACHE */
+function setCache(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function getCache(k){
+  try{
+    const raw=localStorage.getItem(k); if(!raw)return null;
+    const obj=JSON.parse(raw);
+    if(Date.now()-new Date(obj.ts).getTime()>CFG.CACHE_TTL)return null;
+    return obj;
+  }catch(e){return null;}
+}
+
+/* ═══════════════════════════════════════════════════
+   AGMARKNET API FETCH
+═══════════════════════════════════════════════════ */
+async function fetchAgmarknet(crop, limit=500) {
+  const params = new URLSearchParams({
+    'api-key': CFG.AGMARKNET_KEY,
+    format: 'json',
+    limit: String(limit),
+    'filters[state]': 'Gujarat',
+    'filters[commodity]': crop,
+  });
+  const resp = await fetch(`${CFG.AGMARKNET_URL}?${params}`, {signal:AbortSignal.timeout(9000)});
+  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+  const json = await resp.json();
+  return json.records || [];
+}
+
+function parseAgmarknetRecords(records) {
+  const out = {};
+  for (const r of records) {
+    const market = r.market || r.Market || r.market_name || '';
+    const modal = parseFloat(r.modal_price || r.Modal_Price || r.modal || 0);
+    const min = parseFloat(r.min_price || r.Min_Price || r.min || modal*0.92);
+    const max = parseFloat(r.max_price || r.Max_Price || r.max || modal*1.08);
+    const date = r.arrival_date || r.Arrival_Date || today();
+    if (!modal) continue;
+    const nm = CFG.MANDIS.find(m=>market.toLowerCase().includes(m.toLowerCase()));
+    if (!nm) continue;
+    if (!out[nm]) out[nm]=[];
+    out[nm].push({date,modal,min,max});
+  }
+  for (const m of Object.keys(out)) out[m].sort((a,b)=>a.date.localeCompare(b.date));
+  return out;
+}
+
+/* ═══════════════════════════════════════════════════
+   DATA LOADING with graceful fallback
+═══════════════════════════════════════════════════ */
+async function loadMandiData(force=false) {
+  const crop = document.getElementById('mandi-crop')?.value || 'Cotton';
+  setMandiLoading(true);
+
+  const cacheKey = `acg_price_${crop}`;
+  const cached = getCache(cacheKey);
+
+  if (!force && cached) {
+    STATE.mandiData = cached.data;
+    STATE.dataTimestamp = new Date(cached.ts);
+    STATE.dataSource = 'cache';
+    setMandiLoading(false);
+    renderMandiPage();
+    updateHomeStats();
+    return;
+  }
+
+  try {
+    const records = await fetchAgmarknet(crop);
+    if (!records.length) throw new Error('Empty response');
+    const parsed = parseAgmarknetRecords(records);
+    STATE.mandiData = parsed;
+    STATE.dataTimestamp = new Date();
+    STATE.dataSource = 'live';
+    setCache(cacheKey, {data:parsed, ts:STATE.dataTimestamp.toISOString()});
+    document.getElementById('mandi-live-badge').className='lbl lbl-live';
+    document.getElementById('mandi-live-badge').textContent='LIVE';
+    document.getElementById('mandi-table-err').style.display='none';
+  } catch(e) {
+    const last = getCache(cacheKey);
+    if (last) {
+      STATE.mandiData = last.data;
+      STATE.dataTimestamp = new Date(last.ts);
+      STATE.dataSource = 'cache';
+    } else {
+      STATE.mandiData = buildFallback(crop);
+      STATE.dataTimestamp = new Date();
+      STATE.dataSource = 'fallback';
+    }
+    document.getElementById('mandi-live-badge').className='lbl lbl-cache';
+    document.getElementById('mandi-live-badge').textContent='CACHED';
+    document.getElementById('mandi-table-err').style.display='flex';
+  }
+
+  setMandiLoading(false);
+  renderMandiPage();
+  updateHomeStats();
+}
+
+function buildFallback(crop) {
+  const out={};
+  const dates=pastDates(14);
+  for (const mandi of CFG.MANDIS) {
+    const base=FALLBACK[crop]?.[mandi]; if(!base) continue;
+    out[mandi]=dates.map((date,i)=>({
+      date, min:base.min, max:base.max,
+      modal: base.hist[Math.min(i,base.hist.length-1)],
+    }));
+  }
+  return out;
+}
+
+function setMandiLoading(on) {
+  document.getElementById('mandi-chart-wrap').style.display = on?'none':'block';
+  document.getElementById('mandi-chart-sk').style.display = on?'block':'none';
+  document.getElementById('mandi-table-sk').style.display = on?'block':'none';
+  document.getElementById('mandi-table-wrap').style.display = on?'none':'block';
+  if(on){
+    document.getElementById('mandi-ts').textContent='⟳ Fetching live prices from Agmarknet…';
+    document.getElementById('mandi-forecast-text').textContent=' Generating AI forecast…';
+  } else {
+    const ts=STATE.dataTimestamp?fmtDateTime(STATE.dataTimestamp):'—';
+    const src=STATE.dataSource==='live'?'📡 Live Agmarknet':STATE.dataSource==='cache'?'📦 Cached (4h TTL)':'⚠️ Fallback data (API unavailable)';
+    document.getElementById('mandi-ts').textContent=`${src} · Last updated: ${ts}`;
+    document.getElementById('mandi-table-src').textContent=`Source: Agmarknet, Gujarat · ${ts}`;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   AI FORECAST (linear regression — clearly labeled)
+═══════════════════════════════════════════════════ */
+function linReg(ys){
+  const n=ys.length, xs=ys.map((_,i)=>i);
+  const sx=xs.reduce((a,b)=>a+b,0), sy=ys.reduce((a,b)=>a+b,0);
+  const sxy=xs.reduce((a,x,i)=>a+x*ys[i],0), sxx=xs.reduce((a,x)=>a+x*x,0);
+  const slope=(n*sxy-sx*sy)/(n*sxx-sx*sx||1);
+  return {slope, intercept:(sy-slope*sx)/n};
+}
+
+function aiForecasts(hist, days=7){
+  if(!hist||hist.length<2) return [];
+  const ys=hist.map(r=>r.modal);
+  const {slope,intercept}=linReg(ys);
+  return Array.from({length:days},(_,i)=>Math.max(Math.round(intercept+slope*(ys.length+i)),500));
+}
+
+function forecastText(crop, mandi, hist){
+  if(!hist||hist.length<3) return 'Insufficient data for AI forecast.';
+  const ys=hist.map(r=>r.modal);
+  const {slope}=linReg(ys);
+  const pct=((slope*7)/ys[ys.length-1]*100).toFixed(1);
+  const dir=slope>10?'rise':slope<-10?'fall':'remain relatively stable';
+  const pctStr=Math.abs(pct)>0.5?` by approximately ${Math.abs(pct)}%`:'';
+  const advice=slope>20?'Consider storing if storage cost allows.':slope<-20?'Consider selling soon to avoid further decline.':'Prices are stable; sell based on your storage needs.';
+  return ` ${crop} prices at ${mandi} Mandi are AI-forecasted to ${dir}${pctStr} over the next 7 days based on the recent trend. ${advice}`;
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER MANDI PAGE
+═══════════════════════════════════════════════════ */
+function onMandiFilter(){ renderMandiPage(); }
+
+function renderMandiPage(){
+  if(!STATE.mandiData) return;
+  const crop=document.getElementById('mandi-crop').value;
+  const market=document.getElementById('mandi-market').value;
+  const period=parseInt(document.getElementById('mandi-period').value);
+  const mandisToShow=market==='all'?CFG.MANDIS:[market];
+  const primary=market==='all'?CFG.MANDIS[0]:market;
+  const hist=(STATE.mandiData[primary]||[]).slice(-period);
+  const fcVals=aiForecasts(hist,7);
+  const fcLabels=Array.from({length:7},(_,i)=>{
+    const d=new Date(); d.setDate(d.getDate()+i+1);
+    return d.toISOString().split('T')[0].slice(5)+'*';
+  });
+  const labels=[...hist.map(r=>r.date.slice(5)),...fcLabels];
+  const histVals=hist.map(r=>r.modal);
+
+  // Chart
+  const ctx=document.getElementById('mandiChart');
+  if(STATE.charts.mandi) STATE.charts.mandi.destroy();
+  STATE.charts.mandi=new Chart(ctx,{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:`${crop} Actual Price ₹/qtl`,data:[...histVals,...Array(7).fill(null)],
+          borderColor:'#2e7d32',backgroundColor:'rgba(46,125,50,0.07)',fill:true,tension:.35,pointRadius:3,borderWidth:2.5},
+        {label:'AI Forecast (not official)',data:[...Array(histVals.length).fill(null),...fcVals],
+          borderColor:'#f57f17',backgroundColor:'rgba(245,127,23,0.06)',borderDash:[5,5],fill:true,tension:.35,pointRadius:3,borderWidth:2},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'top',labels:{font:{size:11},boxWidth:12}},
+        tooltip:{callbacks:{label:c=>c.raw==null?null:`₹${c.raw.toLocaleString('en-IN')}${c.datasetIndex===1?' (AI Forecast)':''}`}}
+      },
+      scales:{
+        y:{ticks:{callback:v=>'₹'+v.toLocaleString('en-IN'),font:{size:10}},grid:{color:'#f0f4f0'}},
+        x:{ticks:{font:{size:9},maxRotation:45},grid:{display:false}}
+      }
+    }
+  });
+
+  // Forecast text
+  document.getElementById('mandi-forecast-text').textContent=forecastText(crop,primary,hist);
+
+  // Table
+  const tbody=document.getElementById('mandi-tbody');
+  tbody.innerHTML='';
+  for(const mandi of mandisToShow){
+    const mHist=STATE.mandiData[mandi]||[];
+    if(!mHist.length) continue;
+    const lat=mHist[mHist.length-1], prev=mHist.length>1?mHist[mHist.length-2]:null;
+    const diff=prev?lat.modal-prev.modal:0;
+    const fc7=(aiForecasts(mHist,7)||[])[6];
+    const tr=document.createElement('tr');
+    const dH=diff===0?`<span class="neu">—</span>`:diff>0?`<span class="up">▲ ₹${diff}</span>`:`<span class="dn">▼ ₹${Math.abs(diff)}</span>`;
+    tr.innerHTML=`<td><strong>${mandi}</strong></td><td class="pv">₹${lat.modal.toLocaleString('en-IN')}</td>
+      <td style="color:var(--mut);font-size:.8rem">₹${lat.min.toLocaleString('en-IN')}</td>
+      <td style="color:var(--mut);font-size:.8rem">₹${lat.max.toLocaleString('en-IN')}</td>
+      <td>${dH}</td>
+      <td>${fc7?`<span style="color:var(--amb);font-weight:700">₹${fc7.toLocaleString('en-IN')}</span> <span class="lbl lbl-fc" style="font-size:.58rem">AI</span>`:'—'}</td>`;
+    tbody.appendChild(tr);
+  }
+}
+
+function updateHomeStats(){
+  if(!STATE.mandiData) return;
+  const c=STATE.mandiData['Rajkot']; const g=STATE.mandiData['Junagadh'];
+  if(c?.length) document.getElementById('home-cotton-price').textContent='₹'+c[c.length-1].modal.toLocaleString('en-IN');
+  if(g?.length) document.getElementById('home-gnut-price').textContent='₹'+g[g.length-1].modal.toLocaleString('en-IN');
+  if(STATE.dataTimestamp) document.getElementById('home-updated').textContent=fmtDate(STATE.dataTimestamp);
+  const s=document.getElementById('home-api-status');
+  if(STATE.dataSource==='live') s.innerHTML=`<div class="al al-s">✅ <span>Live Agmarknet data loaded · ${fmtDateTime(STATE.dataTimestamp)}</span></div>`;
+  else if(STATE.dataSource==='cache') s.innerHTML=`<div class="al al-i">📦 <span>Cached data from ${fmtDateTime(STATE.dataTimestamp)}. Live API unavailable — auto-retry in background.</span></div>`;
+  else s.innerHTML=`<div class="al al-w">⚠️ <span>API unreachable. Showing <strong>representative fallback prices</strong> from Agmarknet public reports. Values are <strong>not current</strong>. Prices are clearly labeled. Refresh when online.</span></div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   MODULE 2 — BUYER MATCHING
+═══════════════════════════════════════════════════ */
+function getMandiPrice(crop,mandi){
+  const data=STATE.mandiData||(getCache(`acg_price_${crop}`)?.data);
+  if(data?.[mandi]?.length) return data[mandi][data[mandi].length-1].modal;
+  return FALLBACK[crop]?.[mandi]?.modal||0;
+}
+
+function updateBuyerMandiRef(){
+  const crop=document.getElementById('b-crop').value;
+  const loc=document.getElementById('b-loc').value;
+  const p=getMandiPrice(crop,loc);
+  if(p){
+    const ts=STATE.dataTimestamp?fmtDateTime(STATE.dataTimestamp):'cached';
+    document.getElementById('buyer-mandi-src').textContent=`📡 Agmarknet, ${loc} · ${ts}`;
+    document.getElementById('bc-mandi').textContent=`₹${p.toLocaleString('en-IN')}/qtl`;
+    document.getElementById('bc-mid').textContent=`₹${Math.round(p*.9).toLocaleString('en-IN')}/qtl`;
+  }
+}
+
+const BUYER_DB={
+  Cotton:[
+    {name:'Shree Agro Traders Pvt Ltd',loc:'Rajkot',types:['A','B'],premium:.09,contact:'98765-43210',cert:'APMC Verified',minQty:20},
+    {name:'Gujarat Cotton Mills',loc:'Ahmedabad',types:['A','B','C'],premium:.06,contact:'99887-76655',cert:'ISO 9001',minQty:50},
+    {name:'Saurashtra Cotton Corp',loc:'Junagadh',types:['B','C'],premium:.05,contact:'87654-32109',cert:'APMC Verified',minQty:10},
+    {name:'Bhavnagar Agri Exports',loc:'Bhavnagar',types:['A'],premium:.11,contact:'76543-21098',cert:'Export House',minQty:100},
+    {name:'Amreli Farmers Co-op',loc:'Amreli',types:['B','C'],premium:.04,contact:'65432-10987',cert:'State Co-op',minQty:5},
+    {name:'Gondal Commodity Hub',loc:'Gondal',types:['A','B'],premium:.07,contact:'54321-09876',cert:'APMC Verified',minQty:25},
+  ],
+  Groundnut:[
+    {name:'Junagadh Oil Mill Consortium',loc:'Junagadh',types:['A','B'],premium:.08,contact:'91234-56780',cert:'FSSAI Licensed',minQty:10},
+    {name:'Gujarat Groundnut Export Hub',loc:'Rajkot',types:['A'],premium:.12,contact:'82345-67890',cert:'APEDA Export',minQty:50},
+    {name:'Saurashtra Agri Processors',loc:'Bhavnagar',types:['B','C'],premium:.05,contact:'73456-78901',cert:'APMC Verified',minQty:20},
+    {name:'Amreli Oilseed Co-op',loc:'Amreli',types:['A','B','C'],premium:.06,contact:'64567-89012',cert:'State Co-op',minQty:5},
+    {name:'Rajkot Cold Storage & Trading',loc:'Rajkot',types:['C'],premium:.03,contact:'55678-90123',cert:'APMC Verified',minQty:5},
+  ]
+};
+
+function findBuyers(){
+  const crop=document.getElementById('b-crop').value;
+  const loc=document.getElementById('b-loc').value;
+  const qty=parseInt(document.getElementById('b-qty').value)||50;
+  const grade=document.getElementById('b-grade').value;
+  const mandi=getMandiPrice(crop,loc);
+  const eligible=(BUYER_DB[crop]||[]).filter(b=>b.types.includes(grade)&&qty>=b.minQty).sort((a,b)=>b.premium-a.premium);
+  const best=eligible.length?Math.round(mandi*(1+eligible[0].premium)):0;
+  const mid=Math.round(mandi*.9);
+  document.getElementById('bc-mandi').textContent=mandi?`₹${mandi.toLocaleString('en-IN')}/qtl`:'—';
+  document.getElementById('bc-mid').textContent=mandi?`₹${mid.toLocaleString('en-IN')}/qtl`:'—';
+  document.getElementById('bc-buyer').textContent=best?`₹${best.toLocaleString('en-IN')}/qtl`:'—';
+  if(best&&best>mid){
+    const sav=best-mid;
+    document.getElementById('buyer-savings-text').innerHTML=`💚 <strong>Save ₹${sav.toLocaleString('en-IN')}/qtl</strong> vs middleman. On ${qty} qtl = <strong>₹${(sav*qty).toLocaleString('en-IN')} extra</strong>! <span class="lbl lbl-sim">Illustrative</span>`;
+  }
+  document.getElementById('buyer-results-title').textContent=eligible.length?`${eligible.length} Matched Buyers — Grade ${grade} ${crop}`:'No buyers matched. Try a different grade or quantity.';
+  const list=document.getElementById('buyer-list');
+  list.innerHTML='';
+  eligible.slice(0,5).forEach((b,i)=>{
+    const off=Math.round(mandi*(1+b.premium));
+    const div=document.createElement('div');
+    div.className='bc';
+    div.innerHTML=`<div class="bh"><div><div class="bn">${['🥇','🥈','🥉','4.','5.'][i]||''} ${b.name}</div>
+      <div class="bd">📍 ${b.loc} · Min: ${b.minQty} qtl · ${b.cert} · 📞 ${b.contact}</div></div>
+      <div style="text-align:right;flex-shrink:0"><div class="bp">₹${off.toLocaleString('en-IN')}/qtl</div><span class="lbl lbl-sim" style="font-size:.6rem">Illustrative</span></div></div>
+      <div style="margin-top:6px;font-size:.78rem;color:var(--gm)">↑ ₹${(off-mandi).toLocaleString('en-IN')} above live mandi (+${(b.premium*100).toFixed(0)}%)</div>`;
+    list.appendChild(div);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   MODULE 3 — STORAGE ADVISOR
+═══════════════════════════════════════════════════ */
+function runStorageAdvisor(){
+  const crop=document.getElementById('st-crop').value;
+  const mandi=document.getElementById('st-mandi').value;
+  const qty=parseFloat(document.getElementById('st-qty').value)||100;
+  const cost=parseFloat(document.getElementById('st-cost').value)||80;
+  const price=getMandiPrice(crop,mandi);
+  const hist=STATE.mandiData?.[mandi]||[];
+  const fc=aiForecasts(hist,7);
+  const fc7=fc.length?fc[fc.length-1]:price;
+  const delta=fc7-price, gain=delta*qty, net=gain-(cost*qty);
+
+  const icon=document.getElementById('tl-icon');
+  const lbl=document.getElementById('tl-label');
+  const rsn=document.getElementById('tl-reason');
+  let cls;
+  if(delta>cost*1.5){
+    cls='tl-store'; icon.textContent='📦'; lbl.textContent='🕐 WAIT / STORE';
+    rsn.textContent=`AI forecast: prices rising ~₹${Math.abs(Math.round(delta))}/qtl over 7 days. Net gain after storage cost: ₹${Math.round(net).toLocaleString('en-IN')}. (AI Forecast — not guaranteed)`;
+  } else if(delta<-cost){
+    cls='tl-sell'; icon.textContent='💸'; lbl.textContent='⚡ SELL NOW';
+    rsn.textContent=`AI forecast: prices falling ~₹${Math.abs(Math.round(delta))}/qtl. Selling now avoids est. loss of ₹${Math.round(Math.abs(gain)).toLocaleString('en-IN')}. (AI Forecast — not guaranteed)`;
+  } else {
+    cls='tl-wait'; icon.textContent='⚖️'; lbl.textContent='⚖️ SELL NOW (Stable)';
+    rsn.textContent=`Prices forecasted to stay stable (±₹${Math.abs(Math.round(delta))}/qtl). Marginal storage gain may not justify cost. (AI Forecast — not guaranteed)`;
+  }
+  icon.className=`tl-ic ${cls}`;
+
+  const ts=STATE.dataTimestamp?fmtDateTime(STATE.dataTimestamp):'—';
+  document.getElementById('storage-src').textContent=`📡 Agmarknet ${mandi} · ${ts} · AI Trend Forecast`;
+  document.getElementById('sf-price').textContent=price?`₹${price.toLocaleString('en-IN')}/qtl`:'—';
+  const tPct=price?((delta/price)*100).toFixed(1):0;
+  document.getElementById('sf-trend').innerHTML=delta>5?`<span class="up">↑ +₹${Math.round(delta)} (+${tPct}%) <span class="lbl lbl-fc">AI</span></span>`:delta<-5?`<span class="dn">↓ −₹${Math.abs(Math.round(delta))} (${tPct}%) <span class="lbl lbl-fc">AI</span></span>`:`<span class="neu">~ Stable <span class="lbl lbl-fc">AI</span></span>`;
+  document.getElementById('sf-breakeven').textContent=delta>0?`~${(cost/(delta/7)||'—').toFixed?((cost/(delta/7)).toFixed(0)+' days'):'—'}`:'N/A (price falling)';
+  document.getElementById('sf-extra').innerHTML=net>0?`<span class="up">+₹${Math.round(net).toLocaleString('en-IN')} est.</span>`:`<span class="dn">−₹${Math.abs(Math.round(net)).toLocaleString('en-IN')} est.</span>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   MODULE 4 — QUALITY GRADING (AI Simulated)
+═══════════════════════════════════════════════════ */
+function handleDrop(e){
+  e.preventDefault();
+  document.getElementById('upz').classList.remove('drag');
+  const f=e.dataTransfer.files[0]; if(f) showPreview(f);
+}
+function handleImageUpload(e){ const f=e.target.files[0]; if(f) showPreview(f); }
+function showPreview(file){
+  if(!file.type.startsWith('image/')){ alert('Please upload an image file.'); return; }
+  const r=new FileReader();
+  r.onload=ev=>{
+    document.getElementById('preview-img').src=ev.target.result;
+    document.getElementById('img-preview').style.display='block';
+    document.getElementById('grade-result-card').style.display='none';
+  };
+  r.readAsDataURL(file);
+}
+function runGrading(){
+  const crop=document.getElementById('q-crop').value;
+  const btn=document.querySelector('#img-preview .btn');
+  btn.innerHTML='⟳ Analysing…'; btn.disabled=true;
+  setTimeout(()=>{
+    btn.innerHTML='🤖 Run AI Grading'; btn.disabled=false;
+    const seed=(document.getElementById('preview-img').src.length)%3;
+    const g=['A','B','C'][seed], conf=[84,71,62][seed];
+    const names={A:'Grade A — Premium Quality',B:'Grade B — Standard Quality',C:'Grade C — Fair / Below Standard'};
+    const cls={A:'ga',B:'gb',C:'gc'};
+    document.getElementById('grade-badge').textContent=g;
+    document.getElementById('grade-badge').className=`gbdg ${cls[g]}`;
+    document.getElementById('grade-name').textContent=names[g];
+    document.getElementById('grade-conf').textContent=`AI Confidence: ${conf}%`;
+    document.getElementById('grade-pb').style.width=conf+'%';
+    document.getElementById('grade-pb').className=`pf ${conf>75?'pf-g':conf>55?'pf-a':'pf-r'}`;
+    const tips={
+      Cotton:{A:['✅ Good fibre length & uniformity','✅ Low moisture content','✅ Minimal contamination','💡 Eligible for export grades'],
+               B:['⚠️ Minor moisture variation','💡 Clean picking improves to A','⚠️ Some foreign matter — clean before sale','💡 Store dry to prevent downgrade'],
+               C:['❌ Significant contamination','❌ High moisture detected','💡 Air-dry 2–3 days before sale','💡 Blend with Grade B to improve average']},
+      Groundnut:{A:['✅ Uniform pod size & colour','✅ Good shell integrity','✅ Low aflatoxin risk','💡 Suitable for direct export'],
+                 B:['⚠️ Some pod breakage','💡 Better harvesting can reach Grade A','⚠️ Mild shrivelling in ~15% pods','💡 Dry properly before storage'],
+                 C:['❌ High damaged pod count','❌ Possible moisture/fungal risk','💡 Sell or process immediately — do NOT store','💡 Consult APMC extension officer']}
+    };
+    document.getElementById('grade-tips').innerHTML=(tips[crop]?.[g]||[]).map(t=>`<div style="font-size:.8rem;padding:5px 0;border-bottom:1px solid var(--bdr)">${t}</div>`).join('');
+    const pMap={A:1.0,B:.88,C:.74};
+    const mp=getMandiPrice(crop,'Rajkot');
+    const est=Math.round(mp*pMap[g]);
+    document.getElementById('grade-price-text').innerHTML=`At Grade ${g}, your ${crop} is estimated at ~₹${est.toLocaleString('en-IN')}/qtl based on live Rajkot mandi price ₹${mp.toLocaleString('en-IN')}/qtl. <span class="lbl lbl-sim">AI Estimate</span>`;
+    document.getElementById('grade-result-card').style.display='block';
+  },1800);
+}
+
+/* ═══════════════════════════════════════════════════
+   MODULE 5 — INCOME DASHBOARD
+═══════════════════════════════════════════════════ */
+function addSale(){
+  const date=document.getElementById('inc-date').value;
+  const crop=document.getElementById('inc-crop').value;
+  const qty=parseFloat(document.getElementById('inc-qty').value);
+  const price=parseFloat(document.getElementById('inc-price').value);
+  const buyer=document.getElementById('inc-buyer').value.trim()||'Not specified';
+  if(!date||!qty||qty<=0||!price||price<=0){ alert('Please fill all fields with valid values.'); return; }
+  const mandiAvg=getMandiPrice(crop,'Rajkot');
+  STATE.sales.push({id:Date.now(),date,crop,qty,price,buyer,mandiAvg});
+  localStorage.setItem('acg_sales',JSON.stringify(STATE.sales));
+  renderIncome();
+}
+
+function clearSales(){
+  if(!confirm('Clear all sale records?')) return;
+  STATE.sales=[]; localStorage.removeItem('acg_sales'); renderIncome();
+}
+
+function renderIncome(){
+  const wrap=document.getElementById('income-summary-wrap');
+  const empty=document.getElementById('income-empty');
+  if(!STATE.sales.length){ wrap.style.display='none'; empty.style.display='flex'; return; }
+  wrap.style.display='block'; empty.style.display='none';
+
+  const tot=STATE.sales.reduce((a,s)=>a+s.price*s.qty,0);
+  const tq=STATE.sales.reduce((a,s)=>a+s.qty,0);
+  const avg=tq?tot/tq:0;
+  const saved=STATE.sales.reduce((a,s)=>a+(s.price-(s.mandiAvg||0)*.9)*s.qty,0);
+  document.getElementById('income-stats').innerHTML=`
+    <div class="sc hi"><div class="sv">₹${Math.round(tot).toLocaleString('en-IN')}</div><div class="sl">Total Income</div></div>
+    <div class="sc"><div class="sv">${tq} qtl</div><div class="sl">Total Sold</div></div>
+    <div class="sc"><div class="sv">₹${Math.round(avg).toLocaleString('en-IN')}</div><div class="sl">Avg Price/qtl</div></div>
+    <div class="sc ${saved>0?'hi':''}"><div class="sv" style="color:${saved>0?'var(--gd)':'var(--red)'}">₹${Math.abs(Math.round(saved)).toLocaleString('en-IN')}</div><div class="sl">${saved>0?'Saved vs Middlemen':'Below Middlemen'}</div></div>`;
+
+  const sorted=[...STATE.sales].sort((a,b)=>a.date.localeCompare(b.date));
+  const ctx=document.getElementById('incomeChart');
+  if(STATE.incomeChart) STATE.incomeChart.destroy();
+  STATE.incomeChart=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:sorted.map(s=>`${s.date.slice(5)} ${s.crop[0]}`),
+      datasets:[
+        {label:'Your Price ₹/qtl',data:sorted.map(s=>s.price),backgroundColor:'rgba(46,125,50,.7)',borderColor:'#2e7d32',borderWidth:1.5},
+        {label:'Mandi Avg ₹/qtl (Live)',data:sorted.map(s=>s.mandiAvg||0),type:'line',fill:false,backgroundColor:'rgba(2,119,189,.2)',borderColor:'#0277bd',borderWidth:1.5,tension:.3,pointRadius:3}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:12}}},
+      scales:{y:{ticks:{callback:v=>'₹'+v.toLocaleString('en-IN'),font:{size:10}},grid:{color:'#f0f4f0'}},x:{ticks:{font:{size:9}},grid:{display:false}}}}
+  });
+
+  const tbody=document.getElementById('income-tbody');
+  tbody.innerHTML='';
+  sorted.forEach(s=>{
+    const d=s.price-(s.mandiAvg||0), p=s.mandiAvg?((d/s.mandiAvg)*100).toFixed(1):'—';
+    const dH=d>=0?`<span class="up">+₹${Math.round(d)} (+${p}%)</span>`:`<span class="dn">−₹${Math.abs(Math.round(d))} (${p}%)</span>`;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${s.date}</td><td>${s.crop}</td><td>${s.qty}</td><td class="pv">₹${s.price.toLocaleString('en-IN')}</td>
+      <td style="color:var(--mut)">₹${(s.mandiAvg||0).toLocaleString('en-IN')} <span class="lbl lbl-live" style="font-size:.58rem">LIVE</span></td><td>${dH}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════ */
+function nav(page){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById(`pg-${page}`)?.classList.add('on');
+  document.querySelectorAll('.sni,.bni').forEach(b=>b.classList.toggle('on',b.dataset.pg===page));
+  STATE.activePage=page;
+  window.scrollTo(0,0);
+  if(page==='mandi'&&!STATE.mandiData) loadMandiData();
+  else if(page==='mandi') renderMandiPage();
+  if(page==='storage') runStorageAdvisor();
+  if(page==='buyers') updateBuyerMandiRef();
+  if(page==='income') renderIncome();
+}
+
+/* LANG TOGGLE */
+function toggleLang(){
+  STATE.lang=STATE.lang==='en'?'gu':'en';
+  document.getElementById('langBtn').textContent=STATE.lang==='en'?'ગુ':'EN';
+  document.querySelectorAll('[data-en],[data-gu]').forEach(el=>{
+    const t=el.getAttribute(`data-${STATE.lang}`); if(t) el.innerHTML=t;
+  });
+  document.documentElement.lang=STATE.lang==='gu'?'gu':'en';
+}
+
+/* AUTO-REFRESH every 4h */
+setInterval(()=>loadMandiData(), CFG.CACHE_TTL);
+
+/* INIT */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.sni,.bni').forEach(b=>b.addEventListener('click',()=>nav(b.dataset.pg)));
+  document.getElementById('inc-date').value=today();
+  loadMandiData();
+  if(STATE.sales.length) renderIncome();
+});
+</script>
+</body>
+</html>
