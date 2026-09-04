@@ -1,0 +1,2 @@
+# AI-Powered-Cotton-Groundnut-Market-Linkage-Platform
+AI-Powered Cotton &amp; Groundnut Market Linkage Platform is a web-based advisory tool that helps farmers with mandi prices, price forecasts, buyer suggestions, sell-or-store decisions, quality grading, and income tracking. This project is for advisory and educational purposes only; data and results may not be real or official government information.
