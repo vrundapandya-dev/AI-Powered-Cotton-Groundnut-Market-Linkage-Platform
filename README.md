@@ -2,6 +2,10 @@
 
 A web-based advisory platform designed to help cotton and groundnut farmers make better market-related decisions using mandi prices, price forecasting, buyer suggestions, storage recommendations, quality grading, and income tracking.
 
+🌐 Live Demo
+
+🚀 
+
 ## 🚜 Features
 
 * 📊 **Mandi Price Dashboard** – View cotton and groundnut market prices.
