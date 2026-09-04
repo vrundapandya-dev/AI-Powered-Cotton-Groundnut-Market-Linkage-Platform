@@ -4,7 +4,9 @@ A web-based advisory platform designed to help cotton and groundnut farmers make
 
 ## 🌐 Live Demo
 
-[🚀 View Live Demo]([https://github.com/vrundapandya-dev/AI-Powered-Cotton-Groundnut-Market-Linkage-Platform])
+<p>
+  <a href="https://github.com/vrundapandya-dev/AI-Powered-Cotton-Groundnut-Market-Linkage-Platform">🚀 View Live Demo</a>
+</p>
 
 ## 🚜 Features
 
