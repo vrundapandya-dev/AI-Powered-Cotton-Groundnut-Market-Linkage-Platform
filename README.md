@@ -2,9 +2,9 @@
 
 A web-based advisory platform designed to help cotton and groundnut farmers make better market-related decisions using mandi prices, price forecasting, buyer suggestions, storage recommendations, quality grading, and income tracking.
 
-🌐 Live Demo
+## 🌐 Live Demo
 
-🚀 
+[🚀 View Live Demo]([https://YOUR-USERNAME.github.io/YOUR-REPOSITORY-NAME/](https://github.com/vrundapandya-dev/AI-Powered-Cotton-Groundnut-Market-Linkage-Platform))
 
 ## 🚜 Features
 
